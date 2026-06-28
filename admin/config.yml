@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: watery-sl/my-blog
+  branch: main
+  site_domain: watery-sl.github.io
+
+publish_mode: editorial_workflow
+media_folder: "assets/images"
+public_folder: "/my-blog/assets/images"
+
+collections:
+  - name: "post"
+    label: "文章"
+    folder: "journal/posts"
+    create: true
+    slug: "{{year}}.{{month}}.{{day}}-{{slug}}"
+    fields:
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "发布日期", name: "date", widget: "datetime", format: "YYYY.MM.DD", date_format: "YYYY.MM.DD", time_format: false}
+      - {label: "标签", name: "tags", widget: "list", required: false}
+      - {label: "正文", name: "body", widget: "markdown"}
