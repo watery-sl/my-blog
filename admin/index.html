@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>后台管理 — watery</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .admin-wrapper { max-width: 600px; margin: 60px auto; padding: 0 20px; }
+    .admin-card { background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; margin-bottom: 20px; }
+    .admin-card h1 { font-family: var(--font-heading); font-size: 18px; font-weight: 400; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text-light); margin-bottom: 6px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--pink); }
+    .form-group textarea { min-height: 300px; resize: vertical; line-height: 1.8; }
+    .form-group .hint { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+    .btn { padding: 10px 28px; border-radius: 25px; border: none; font-size: 14px; cursor: pointer; transition: opacity 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, var(--pink), var(--lavender)); color: #fff; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 16px; display: none; }
+    .msg.success { display: block; background: var(--mint); color: #fff; }
+    .msg.error { display: block; background: var(--pink); color: #fff; }
+    .token-section { margin-bottom: 24px; }
+    .token-section input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-size: 13px; font-family: monospace; outline: none; }
+    .token-section input:focus { border-color: var(--pink); }
+    .saved-hint { font-size: 12px; color: var(--mint); margin-top: 4px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrapper">
+    <div class="admin-card">
+      <h1>写新文章</h1>
+
+      <div id="msg" class="msg"></div>
+
+      <div class="token-section">
+        <div class="form-group">
+          <label>GitHub 访问令牌</label>
+          <input type="password" id="tokenInput" placeholder="输入你的 GitHub Personal Access Token">
+          <div class="hint">需要在 GitHub → Settings → Developer settings → Personal access tokens 创建，勾选 repo 权限</div>
+          <div class="saved-hint" id="savedHint">✓ 令牌已保存</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>文章标题</label>
+        <input type="text" id="titleInput" placeholder="输入标题">
+      </div>
+
+      <div class="form-group">
+        <label>正文（支持 Markdown 格式）</label>
+        <textarea id="contentInput" placeholder="开始写文章..."></textarea>
+        <div class="hint">支持标题、粗体、列表、链接等 Markdown 语法</div>
+      </div>
+
+      <button class="btn btn-primary" id="publishBtn" onclick="publish()">发布文章</button>
+    </div>
+
+    <div style="text-align:center;margin-top:8px;">
+      <a href="../journal.html" style="font-size:13px;color:var(--text-light);">&larr; 回到网站</a>
+    </div>
+  </div>
+
+  <script>
+    const savedToken = localStorage.getItem('gh_token');
+    if (savedToken) {
+      document.getElementById('tokenInput').value = savedToken;
+      document.getElementById('savedHint').style.display = 'block';
+    }
+
+    document.getElementById('tokenInput').addEventListener('input', function() {
+      if (this.value.length > 10) {
+        localStorage.setItem('gh_token', this.value);
+        document.getElementById('savedHint').style.display = 'block';
+      } else {
+        document.getElementById('savedHint').style.display = 'none';
+      }
+    });
+
+    function showMsg(text, type) {
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.className = 'msg ' + type;
+      el.style.display = 'block';
+    }
+
+    async function publish() {
+      const token = document.getElementById('tokenInput').value.trim();
+      const title = document.getElementById('titleInput').value.trim();
+      const content = document.getElementById('contentInput').value.trim();
+
+      if (!token) { showMsg('请先输入 GitHub 访问令牌', 'error'); return; }
+      if (!title) { showMsg('请输入文章标题', 'error'); return; }
+      if (!content) { showMsg('请输入正文内容', 'error'); return; }
+
+      const btn = document.getElementById('publishBtn');
+      btn.disabled = true;
+      btn.textContent = '发布中...';
+
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const dateStr = now.getFullYear() + '.' + pad(now.getMonth()+1) + '.' + pad(now.getDate());
+      const slug = dateStr + '-' + title.replace(/[^\w\u4e00-\u9fa5]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+
+      const mdContent = '---\ntitle: ' + title + '\ndate: ' + dateStr + '\n---\n\n' + content;
+
+      try {
+        const res = await fetch('https://api.github.com/repos/watery-sl/my-blog/contents/journal/posts/' + slug + '.md', {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'publish: ' + title,
+            content: btoa(unescape(encodeURIComponent(mdContent)))
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || '发布失败');
+        }
+
+        showMsg('发布成功！网站将在几分钟后更新。', 'success');
+        document.getElementById('titleInput').value = '';
+        document.getElementById('contentInput').value = '';
+      } catch (e) {
+        showMsg('发布失败：' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '发布文章';
+      }
+    }
+  </script>
+</body>
+</html>
