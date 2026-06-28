@@ -6,15 +6,9 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,26 +17,8 @@ jobs:
           node-version: 20
       - name: Generate posts index
         run: node scripts/generate-index.js
-      - name: Commit updated index
-        run: |
-          git config user.name "watery-bot"
-          git config user.email "3037641445@qq.com"
-          git add journal/posts-index.json
-          git diff --staged --quiet || (git commit -m "auto: update posts index [skip ci]" && git push)
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          ref: main
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: '.'
