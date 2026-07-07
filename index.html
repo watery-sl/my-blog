@@ -16,6 +16,7 @@
           <a href="photos.html">相册</a>
           <a href="journal.html">文章</a>
           <a href="about.html">关于</a>
+          <a href="trash.html" id="trashLink" style="display:none">回收站</a>
           <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
       </div>
@@ -51,6 +52,17 @@
     <img id="lightboxImg" src="" alt="">
   </div>
 
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+      <h3>确定删除这条动态？</h3>
+      <p>删除后会自动移到回收站，可以恢复。</p>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="cancelDelete()">取消</button>
+        <button class="btn btn-danger" onclick="doDelete()">确定删除</button>
+      </div>
+    </div>
+  </div>
+
   <div class="token-modal" id="tokenModal">
     <div class="token-modal-content">
       <h2>首次使用需要设置</h2>
@@ -69,6 +81,11 @@
     </div>
   </div>
 
+  <script>
+    if (localStorage.getItem('gh_token')) {
+      document.getElementById('trashLink').style.display = '';
+    }
+  </script>
   <script src="js/main.js"></script>
 </body>
 </html>

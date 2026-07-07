@@ -413,10 +413,36 @@ article hr {
 .moment-item {
   padding: 20px 24px;
   border-bottom: 1px solid var(--border);
+  position: relative;
 }
 
 .moment-item:last-child {
   border-bottom: none;
+}
+
+.moment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.moment-del-btn {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: var(--text-light);
+  padding: 4px;
+}
+
+.moment-item:hover .moment-del-btn {
+  opacity: 1;
+}
+
+.moment-del-btn:hover {
+  color: #e74c3c;
 }
 
 .moment-text {
@@ -425,6 +451,7 @@ article hr {
   color: var(--text);
   white-space: pre-wrap;
   word-break: break-word;
+  flex: 1;
 }
 
 .moment-images {
@@ -588,6 +615,126 @@ article hr {
   font-size: 22px;
   color: var(--text-light);
   cursor: pointer;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+  padding: 32px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-box h3 {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.modal-box p {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modal-actions .btn {
+  padding: 8px 24px;
+  border-radius: 20px;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.modal-actions .btn-cancel {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.modal-actions .btn-danger {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.modal-actions .btn:hover {
+  opacity: 0.85;
+}
+
+.trash-item {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.trash-item:last-child {
+  border-bottom: none;
+}
+
+.trash-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.trash-meta {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 8px;
+}
+
+.trash-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.trash-btn {
+  padding: 5px 14px;
+  border-radius: 16px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.trash-btn.restore {
+  background: var(--mint);
+  color: #fff;
+}
+
+.trash-btn.delete {
+  background: var(--text-light);
+  color: #fff;
+}
+
+.trash-btn:hover {
+  opacity: 0.8;
 }
 
 footer {
