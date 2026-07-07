@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>日常 — watery</title>
+  <title>相册 — watery</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,8 +13,8 @@
         <div class="site-title"><a href="index.html">watery</a></div>
         <div class="nav-links">
           <a href="index.html">首页</a>
-          <a href="photos.html">相册</a>
-          <a href="journal.html" class="active">文章</a>
+          <a href="photos.html" class="active">相册</a>
+          <a href="journal.html">文章</a>
           <a href="about.html">关于</a>
           <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
@@ -22,16 +22,22 @@
     </header>
 
     <main>
-      <div class="section-title">文章</div>
+      <div class="section-title">相册</div>
 
-      <div class="card" id="postList">
-        <div class="empty-state">加载中...</div>
+      <div class="card">
+        <div class="photo-grid" id="photoGrid">
+          <div class="photo-empty">加载中...</div>
+        </div>
       </div>
     </main>
 
     <footer>
       &copy; 2026 watery
     </footer>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
   </div>
 
   <script src="js/main.js"></script>
