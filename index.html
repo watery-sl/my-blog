@@ -13,7 +13,8 @@
         <div class="site-title"><a href="index.html">watery</a></div>
         <div class="nav-links">
           <a href="index.html" class="active">首页</a>
-          <a href="journal.html">日常</a>
+          <a href="photos.html">相册</a>
+          <a href="journal.html">文章</a>
           <a href="about.html">关于</a>
           <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
@@ -21,14 +22,22 @@
     </header>
 
     <main>
-      <div class="card hero-card">
-        <h1>记录一些日常<br>和心里想的事情</h1>
-        <p>这里是 watery 的小角落。</p>
+      <div class="card moment-box">
+        <textarea id="momentText" placeholder="说点什么..." rows="1"></textarea>
+        <div class="image-preview" id="imagePreview"></div>
+        <div id="momentMsg" class="msg"></div>
+        <div class="moment-actions">
+          <div class="moment-actions-left">
+            <label class="moment-img-btn" title="添加照片">&#128247;</label>
+            <input type="file" id="imageInput" accept="image/*" multiple style="display:none">
+          </div>
+          <button class="moment-publish-btn" id="publishBtn">发布</button>
+        </div>
       </div>
 
-      <div class="section-title">最新日常</div>
+      <div class="section-title">动态</div>
 
-      <div class="card" id="postList">
+      <div class="card" id="momentsFeed">
         <div class="empty-state">加载中...</div>
       </div>
     </main>
@@ -36,6 +45,28 @@
     <footer>
       &copy; 2026 watery
     </footer>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <div class="token-modal" id="tokenModal">
+    <div class="token-modal-content">
+      <h2>首次使用需要设置</h2>
+      <p>在 GitHub 创建一个访问令牌，就能在这里直接发布了。</p>
+      <ol>
+        <li>打开 <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></li>
+        <li>点 <strong>Generate new token (classic)</strong></li>
+        <li>Note 填 <code>watery-site</code></li>
+        <li>Expiration 选 <strong>No expiration</strong></li>
+        <li>勾选 <strong>repo</strong>（一整栏）</li>
+        <li>点 <strong>Generate token</strong></li>
+        <li>复制生成的令牌（ghp_ 开头）</li>
+      </ol>
+      <input type="password" id="tokenInput" placeholder="粘贴你的 GitHub 令牌">
+      <button class="btn btn-primary" onclick="confirmToken()">确认</button>
+    </div>
   </div>
 
   <script src="js/main.js"></script>
